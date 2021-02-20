@@ -2,43 +2,57 @@ import React, { Component } from 'react';
 import './todo-list-item.css'
 
 export default class TodoListItem extends Component {
-    
 
-    constructor() {
-        super();
+  state = {
+    done: false,
+    important: false
+  }
 
-        this.onLabelClick = () => {
-            console.log(`${this.props.label} is done`);
-        }
+  onLabelClick = () => {
+    this.setState({
+      done: !this.state.done,
+    })
+  }
+
+  onMarkImportant = () => {
+    this.setState({
+      important: !this.state.important,
+    })
+  }
+
+  render() {
+    const { label } = this.props;
+    const { done, important } = this.state;
+    let classNames = 'todo-list-item';
+
+    if(done) {
+      classNames += ' done';
     }
 
-    render() {
-
-        const { label, important = false } = this.props;
-        const style = {
-            color: important ? 'tomato' : 'black'
-        }
-    
-        return (
-            <div className="todo-list-item">
-
-                <div 
-                  style={style} 
-                  className="todo-list-item-label"
-                  onClick={this.onLabelClick}
-                >
-                  {label}
-                </div>
-
-                <div className="todo-list-item-btn-block">
-                  <button type="button" className="btn btn-outline-success btn-sm">
-                    <i className="fa fa-exclamation" />
-                  </button>
-                  <button type="button" className="btn btn-outline-danger btn-sm">
-                    <i className="fa fa-trash-o" />
-                  </button>
-                </div>
-            </div>
-        )
+    if(important) {
+      classNames += ' important';
     }
+
+
+    return (
+      <div className={classNames}>
+
+        <div
+          className="todo-list-item-label"
+          onClick={this.onLabelClick}
+        >
+          {label}
+        </div>
+
+        <div className="todo-list-item-btn-block">
+          <button type="button" className="btn btn-outline-danger btn-sm">
+            <i className="fa fa-trash-o" />
+          </button>
+          <button type="button" className="btn btn-outline-success btn-sm" onClick={this.onMarkImportant}>
+            <i className="fa fa-exclamation" />
+          </button>
+        </div>
+      </div>
+    )
+  }
 }
