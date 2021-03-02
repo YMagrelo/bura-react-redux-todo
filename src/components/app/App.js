@@ -12,11 +12,14 @@ export default class App extends Component {
 
   state = {
     todoData: [
-      this.createTodoItem('Drink Coffe and eating'),
+      this.createTodoItem('Drink Coffee and eating'),
       this.createTodoItem('Make awesome App'),
       this.createTodoItem('Have a lunch'),
     ],
+    query: '',
   }
+
+ 
 
   createTodoItem(label) {
     return {
@@ -79,18 +82,32 @@ export default class App extends Component {
     })
   }
 
+  onSearchChange = (query) => {
+    this.setState({
+      query: query
+    })
+  }
+
+  search = (items, query) => {
+    if(!query) {
+      return items;
+    }
+    return items.filter((item) => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1);
+  }
+
   render() {
-    const { todoData } = this.state;
+    const { todoData, query } = this.state;
     const doneCount = todoData.filter((item) => item.done).length;
     const todoCount = todoData.filter((item) => !item.done).length;
+    const filteredTodos = this.search(todoData, query);
 
     return (
       <div className="app-container">
         <AppHeader done={doneCount} toDo={todoCount} />
-        <SearchPanel />
+        <SearchPanel setQuery={this.onSearchChange} />
         <ItemStatusFilter />
         <TodoList
-          todos={this.state.todoData}
+          todos={filteredTodos}
           onDeleted={this.deleteItem}
           onToggleDone={this.onToggleDone}
           onToggleImportant={this.onToggleImportant}
